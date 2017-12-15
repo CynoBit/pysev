@@ -1,6 +1,7 @@
 {
   "host": "",
   "port": 8952,
+  "module": "server",
   "on_load": "loader_call",
   "rules": [
     {
@@ -8,7 +9,15 @@
         "mode": "ping",
         "message": "hello"
       },
-      "call": "ping_back"
+      "match_call": "ping_back",
+      "mismatch_call":"optional"
+    },
+    {
+      "conditions": {
+        "mode": "anotherMode",
+        "aKey": "theValue"
+      },
+      "call": "another_function_call"
     }
   ]
 }
