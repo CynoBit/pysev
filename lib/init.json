@@ -1,6 +1,7 @@
 {
-  "ip": "127.0.0.1",
+  "host": "",
   "port": 8952,
+  "on_load": "loader_call",
   "rules": [
     {
       "conditions": {
