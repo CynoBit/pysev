@@ -1,0 +1,13 @@
+{
+  "ip": "127.0.0.1",
+  "port": 8952,
+  "rules": [
+    {
+      "conditions": {
+        "mode": "ping",
+        "message": "hello"
+      },
+      "call": "ping_back"
+    }
+  ]
+}
