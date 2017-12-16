@@ -5,20 +5,32 @@ import importlib
 from pd_utility import matcher
 from thread import *
 
+"""
+PYTHON-DANCE v0.1
+SERVER'S CORE. PLS DO NOT TOUCH UNLESS YOU ARE SURE OF WHAT YOU ARE DOING.
+"""
+
+NL = "\r\n"
+
 print ("Python Dance v0.1")
 print ("Initializing...")
-print ("Loading Configurations")
 
-init = json.load(open("init.json"))
-i = importlib.import_module(init["module"])
+init = json.load(open("init.json"))  # Loading and parsing the init.json file in the root folder.
+i = importlib.import_module(init["module"])  # import the specified module in the init.json file.
 
-print ("Configurations Loaded")
+if 'on_load' in init:
+    if hasattr(i, init["on_load"]):
+        on_load = getattr(i, init["on_load"])
+        on_load()
+    else:
+        print ("Warning, on_load function not found.")
+
+print ("Initialized.")
 print ("Creating Socket...")
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-print ("Socket Created.")
 print ("Binding Socket to Port {}...".format(init["port"]))
 
 try:
@@ -27,7 +39,7 @@ except socket.error, msg:
     print ("Bind failed. Error Code : " + str(msg[0]) + " Message " + msg[1])
     sys.exit()
 
-print ("Socket Bound to Port {}.".format(init["port"]))
+print ("Socket Successfully Bound to Port {}.".format(init["port"]))
 
 s.listen(10)
 
@@ -38,6 +50,7 @@ def client_thread(connection, ip, port):
     buff = ""
     used = False
     append_buffer = False
+    keep_alive = False
     while True:
         data = connection.recv(1024)
         print ("Received Data: " + data.strip())
@@ -79,11 +92,20 @@ def client_thread(connection, ip, port):
         else:
             for rule in init["rules"]:
                 if matcher.is_match(rule["conditions"], payload):
-                    func = getattr(i, rule["call"])
-                    connection.sendall(func(payload))
-                    connection.close()
-                    print ("Connection Closed")
-                    sys.exit()
+                    func = getattr(i, rule["match_call"])
+                    response = func(payload)
+                    if isinstance(response, dict):
+                        response = json.dumps(response)
+                        print ("Sending Back -> {}.".format(response))
+                        connection.sendall(response + NL)
+                    if 'keep_alive' in rule:
+                        if rule["keep_alive"] != 1:
+                            connection.close()
+                    elif not keep_alive:
+                        connection.close()
+                        print ("Connection Closed")
+                        sys.exit()
+                    break
 
 
 while True:

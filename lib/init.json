@@ -10,14 +10,15 @@
         "message": "hello"
       },
       "match_call": "ping_back",
-      "mismatch_call":"optional"
+      "mismatch_call":"optional",
+      "keep_alive": 1
     },
     {
       "conditions": {
         "mode": "anotherMode",
         "aKey": "theValue"
       },
-      "call": "another_function_call"
+      "match_call": "another_function_call"
     }
   ]
 }
