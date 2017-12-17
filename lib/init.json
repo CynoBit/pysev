@@ -10,7 +10,6 @@
         "message": "hello"
       },
       "match_call": "ping_back",
-      "mismatch_call":"optional",
       "keep_alive": 1
     },
     {
