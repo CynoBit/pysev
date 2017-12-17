@@ -1,0 +1,23 @@
+{
+  "host": "",
+  "port": 1000,
+  "module": "package_name",
+  "on_load": "loader_function",
+  "rules": [
+    {
+      "conditions": {
+        "message_type": "ping",
+        "message": "hello"
+      },
+      "match_call": "ping_back",
+      "keep_alive": 1
+    },
+    {
+      "conditions": {
+        "message_type": "another_message_type",
+        "message": "hello there again"
+      },
+      "match_call": "another_function_call"
+    }
+  ]
+}
