@@ -112,7 +112,7 @@ def client_thread(connection, ip, port):
                             connection.close()
                     elif not keep_alive:
                         connection.close()
-                        print ("Connection Closed")
+                        print ("Closed Connection with {}:{}".format(ip, port))
                         sys.exit()
                     break
 
